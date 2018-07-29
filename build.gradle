@@ -1,0 +1,32 @@
+apply plugin: "java-library"
+apply plugin: "org.gradle.java.experimental-jigsaw"
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
+    dependencies {
+        classpath "gradle.plugin.org.gradle.java:experimental-jigsaw:0.1.1"
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+group "ud"
+version "0.1.0-SNAPSHOT"
+
+sourceCompatibility = "11"
+
+dependencies {
+    compile "org.glassfish:javax.json:1.1"
+}
+
+task copyToLib(type: Copy) {
+    into "$buildDir/libs"
+    from configurations.compile
+}
