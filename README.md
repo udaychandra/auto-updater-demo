@@ -11,4 +11,4 @@
 * If you have nodejs, install the popular command line [http-server](https://github.com/indexzero/http-server) package, cd to mock-server folder and run http-server
 * You can now execute the "run.sh" script to start the CLI and watch it auto-update and print the current bitcoin price
 
-More information about this sample project can be found on medium. 
+More information about this sample project can be found on [medium](https://medium.com/@ud.chandra/auto-updatable-self-contained-cli-with-java-11-765afb545e52). 
