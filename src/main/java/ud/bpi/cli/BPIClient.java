@@ -8,28 +8,50 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
-public class BPIClient {
+import static ud.bpi.cli.Constants.BPI;
+import static ud.bpi.cli.Constants.RATE;
+import static ud.bpi.cli.Constants.USD;
+
+/**
+ * Talks to the coin desk REST API to retrieve the current bitcoin price index.
+ */
+class BPIClient {
 
     private final HttpRequest bpiRequest;
-    private final HttpClient bpiApiClient;
 
-    public BPIClient(Properties config) throws URISyntaxException {
+    BPIClient(Properties config) throws URISyntaxException {
 
+        // The GET request to the coin desk API is always the same. So we construct the request upfront.
         bpiRequest = HttpRequest.newBuilder()
                 .uri(new URI(config.getProperty("bpiURL")))
                 .GET()
                 .build();
-
-        bpiApiClient = HttpClient.newHttpClient();
     }
 
-    public CompletableFuture<JsonObject> getCurrentBPI() {
+    /**
+     * Return a string describing the current bitcoin price index in USD.
+     *
+     * @return a string describing the current bitcoin price index in USD.
+     */
+    CompletableFuture<String> getCurrentBPI() {
 
-        return bpiApiClient
+
+        return HttpClient.newHttpClient()
                 .sendAsync(bpiRequest, HttpResponse.BodyHandlers.ofString())
-                .thenApply(response -> Json.createReader(new StringReader(response.body())).readObject());
+                .thenApply(this::toJson)
+                .thenApply(bpiJson -> {
+                    var rate = bpiJson.getJsonObject(USD).getString(RATE);
+
+                    return "Current Price: $" + rate;
+                });
+    }
+
+    private JsonObject toJson(HttpResponse<String> response) {
+        return Json.createReader(new StringReader(response.body())).readObject().getJsonObject(BPI);
     }
 }

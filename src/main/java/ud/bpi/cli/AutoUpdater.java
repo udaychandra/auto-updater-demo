@@ -18,7 +18,12 @@ import java.util.concurrent.CompletableFuture;
 import static ud.bpi.cli.Constants.TWO_FOLDER_HOPS;
 import static ud.bpi.cli.Constants.VERSION;
 
-public class AutoUpdater {
+/**
+ * Auto-updater class that provides:
+ * 1) Ability to talk to a central repository to check for new versions of the CLI
+ * 2) Download and unzip the latest version of the CLI
+ */
+class AutoUpdater {
 
     private static final String VERSION_ZIP_FILE = TWO_FOLDER_HOPS + "%d.zip";
     private static final String VERSION_TXT = "version.txt";
@@ -53,7 +58,7 @@ public class AutoUpdater {
 
     private final State state;
 
-    public AutoUpdater(Properties config) {
+    AutoUpdater(Properties config) {
         updateCheckURL = config.getProperty("updateCheckURL");
         updateZipURL = config.getProperty("updateZipURL");
 
@@ -62,7 +67,7 @@ public class AutoUpdater {
         state = new State(Integer.valueOf(config.getProperty(VERSION)));
     }
 
-    public CompletableFuture<Boolean> check() {
+    CompletableFuture<Boolean> check() {
         try {
 
             HttpRequest request = HttpRequest.newBuilder()
@@ -85,7 +90,7 @@ public class AutoUpdater {
         }
     }
 
-    public CompletableFuture<Boolean> update() {
+    CompletableFuture<Boolean> update() {
 
         if (state.status != Status.SHOULD_UPDATE) {
             return CompletableFuture.completedFuture(false);

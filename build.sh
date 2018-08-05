@@ -8,8 +8,8 @@ fi
 JAVA_LINK=$JAVA_HOME/bin/jlink
 
 if [[ -z "${BPI_CLI_VERSION}" ]]; then
-    echo "Using default BPI_CLI_VERSION value"
     BPI_CLI_VERSION=1
+    echo "Using default BPI_CLI_VERSION: ${BPI_CLI_VERSION}"
 fi
 
 BPI_DIR=build/bpi
@@ -35,4 +35,4 @@ ${JAVA_LINK} --module-path build/libs/:${JAVA_HOME}/jmods \
 GREEN='\033[0;32m'
 NC='\033[0m'
 
-echo "\n${GREEN}Bitcoin Price Index CLI custom runtime image built${NC}\n"
+echo "\n${GREEN}BPI CLI custom runtime image built${NC}\n"
